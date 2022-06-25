@@ -1,10 +1,12 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  const whitelist = ['http://localhost:45627'];
+import { join } from 'path';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
+async function bootstrap() {
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  // app.set('views', join(__dirname, 'views'));
   app.enableCors();
 
   /**
@@ -27,4 +29,3 @@ async function bootstrap() {
   await app.listen(3000);
 }
 bootstrap();
-console.log(process.env.DB_DATABASE);

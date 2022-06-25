@@ -55,7 +55,7 @@ export class UserService {
         HttpStatus.UNAUTHORIZED,
       );
     }
-    const token = await this.generateAccessToken(user.id);
+    const token = await this.generateToken(user.id);
     return { user, ...token };
   }
 
@@ -73,12 +73,18 @@ export class UserService {
   }
 
   /** UTILS **/
-  async generateAccessToken(id: string) {
+  async generateToken(id: string, time?: string) {
     const payload: JWTPayload = { userId: id };
+    if (time) {
+      return {
+        token: this.jwtService.sign(payload, { expiresIn: time }),
+      };
+    }
     return {
-      access_token: this.jwtService.sign(payload),
+      token: this.jwtService.sign(payload),
     };
   }
+
   async validatePassword(
     password: string,
     passwordReceived: string,

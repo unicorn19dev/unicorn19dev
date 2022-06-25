@@ -1,3 +1,4 @@
+import { AuthService } from './auth.service';
 import { User } from './../interfaces/user';
 import {
   registerValidation,
@@ -16,7 +17,10 @@ import {
 } from '../dto/user.dto';
 @Controller()
 export class AuthController {
-  constructor(private userService: UserService) {}
+  constructor(
+    private userService: UserService,
+    private authService: AuthService,
+  ) {}
 
   @Post('register')
   async createUser(
@@ -48,13 +52,23 @@ export class AuthController {
   }
 
   @Post('passwordRecoveryRequest')
-  passwordRecoveryRequest(
+  async passwordRecoveryRequest(
     @Body() passwordRequest: PasswordRecoveryRequestDTO,
-  ): ResponseDTO {
-    return {
-      message: 'Successfull',
-      data: {},
-    };
+  ): Promise<ResponseDTO> {
+    try {
+      const response = await this.authService.forgotPassword(
+        passwordRequest.email,
+      );
+      return {
+        message: 'Email enviado',
+        data: response,
+      };
+    } catch (err) {
+      return {
+        message: 'Error',
+        data: err,
+      };
+    }
   }
 
   @Post('changePassword')

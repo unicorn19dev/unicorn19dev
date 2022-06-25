@@ -1,7 +1,6 @@
 export class DBConnection {
   config: any;
   constructor() {
-    console.log(process.env.DB_DATABASE);
     this.config = {
       database: process.env.DB_DATABASE,
       password: process.env.DB_PASSWORD,
