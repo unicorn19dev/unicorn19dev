@@ -1,13 +1,18 @@
+import { JwtService } from '@nestjs/jwt';
 import { User } from './interfaces/user';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { RegisterDTO, LoginDTO } from './dto/user.dto';
 import * as bcrypt from 'bcrypt';
+import { JWTPayload } from './jwt';
 
 @Injectable()
 export class UserService {
-  constructor(@InjectModel('Users') private userModel: Model<User>) {}
+  constructor(
+    @InjectModel('Users') private userModel: Model<User>,
+    private readonly jwtService: JwtService,
+  ) {}
 
   async createUser(user: RegisterDTO): Promise<string> {
     const userFound = await this.userModel.findOne({ email: user.email });
@@ -23,7 +28,9 @@ export class UserService {
   }
 
   async login(credentials: LoginDTO): Promise<any> {
-    const user = await this.userModel.findOne({ email: credentials.email });
+    const user: User = await this.userModel.findOne({
+      email: credentials.email,
+    });
 
     if (!user) {
       throw new HttpException(
@@ -34,7 +41,10 @@ export class UserService {
         HttpStatus.NOT_FOUND,
       );
     }
-    const valid = await bcrypt.compare(credentials.password, user.password);
+    const valid = await this.validatePassword(
+      credentials.password,
+      user.password,
+    );
 
     if (!valid) {
       throw new HttpException(
@@ -45,7 +55,8 @@ export class UserService {
         HttpStatus.UNAUTHORIZED,
       );
     }
-    return user;
+    const token = await this.generateAccessToken(user.id);
+    return { user, ...token };
   }
 
   async getUsers(): Promise<User[]> {
@@ -53,5 +64,25 @@ export class UserService {
     return users;
   }
 
-  getUser(id) {}
+  getUserByEmail(email: string) {
+    return this.userModel.findOne({ email });
+  }
+
+  getUserById(id: string) {
+    return this.userModel.findOne({ _id: id });
+  }
+
+  /** UTILS **/
+  async generateAccessToken(id: string) {
+    const payload: JWTPayload = { userId: id };
+    return {
+      access_token: this.jwtService.sign(payload),
+    };
+  }
+  async validatePassword(
+    password: string,
+    passwordReceived: string,
+  ): Promise<boolean> {
+    return await bcrypt.compareSync(password, passwordReceived);
+  }
 }

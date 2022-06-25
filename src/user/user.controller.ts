@@ -8,7 +8,6 @@ export class UserController {
   @Get()
   async getUsers(): Promise<ResponseDTO> {
     const users = await this.userService.getUsers();
-    console.log(users);
     return {
       message: 'Users',
       data: users,
@@ -19,7 +18,7 @@ export class UserController {
   getUser(@Param() id): ResponseDTO {
     return {
       message: 'user information',
-      data: this.userService.getUser(id),
+      data: this.userService.getUserById(id),
     };
   }
 

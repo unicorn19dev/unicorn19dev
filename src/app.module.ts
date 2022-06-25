@@ -1,3 +1,4 @@
+import { JwtModule } from '@nestjs/jwt';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -23,10 +24,10 @@ import { ServicesController } from './services/services.controller';
         schema: UserSchema,
       },
     ]),
+    JwtModule.register({ secret: 'hard!to-guess_secret' }),
   ],
   controllers: [
     AppController,
-    AuthController,
     UserController,
     SuscriptionsController,
     MedicalHistoryController,
