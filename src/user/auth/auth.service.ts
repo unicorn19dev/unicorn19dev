@@ -58,7 +58,6 @@ export class AuthService {
         };
       }
       const newPassword = encrypt(data.newPassword);
-      console.log('newPassword', newPassword);
       await this.userModel.findOneAndUpdate(
         { email: data.email },
         { password: newPassword },

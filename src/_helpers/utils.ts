@@ -21,7 +21,6 @@ export function sendEmail(
     });
 
     const source = fs.readFileSync(join(__dirname, '..', template), 'utf8');
-    console.log('source', source);
     const compiledTemplate = handlebars.compile(source);
     const options = () => {
       return {
@@ -33,16 +32,13 @@ export function sendEmail(
     };
     // Send email
     transporter.sendMail(options(), (error, info) => {
-      console.log(info, 'info');
       if (error) {
-        console.log('error', error);
         return { status: false, data: error };
       } else {
         return { status: true, data: {} };
       }
     });
   } catch (error) {
-    console.log('error', error);
     return { status: false, data: error };
   }
 }

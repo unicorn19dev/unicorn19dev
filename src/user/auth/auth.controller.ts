@@ -76,7 +76,6 @@ export class AuthController {
     @Body() changePassword: ChangePasswordDTO,
   ): Promise<ResponseDTO> {
     const result = await this.authService.resetPassword(changePassword);
-    console.log(result, 'RESULT');
     if (!result.status) {
       return {
         message: 'Error!',
