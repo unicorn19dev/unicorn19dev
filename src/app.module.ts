@@ -1,3 +1,4 @@
+import { ResetTokenSchema } from './user/schemas/resetToken.schema';
 import { JwtModule } from '@nestjs/jwt';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
@@ -22,6 +23,10 @@ import { ServicesController } from './services/services.controller';
       {
         name: 'Users',
         schema: UserSchema,
+      },
+      {
+        name: 'ResetToken',
+        schema: ResetTokenSchema,
       },
     ]),
     JwtModule.register({ secret: 'hard!to-guess_secret' }),

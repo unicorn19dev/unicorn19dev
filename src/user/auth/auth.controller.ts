@@ -38,10 +38,10 @@ export class AuthController {
     @Body(new JoiValidationPipe(loginValidation)) credentials: LoginDTO,
   ): Promise<ResponseDTO> {
     try {
-      const user = (await this.userService.login(credentials)) as User;
+      const session = await this.userService.login(credentials);
       return {
-        message: `Welcome ${user.firstName} ${user.lastName}`,
-        data: user,
+        message: `Welcome ${session.user.firstName} ${session.user.lastName}`,
+        data: session,
       };
     } catch (err) {
       return {
@@ -71,11 +71,21 @@ export class AuthController {
     }
   }
 
-  @Post('changePassword')
-  changePassword(@Body() changePassword: ChangePasswordDTO): ResponseDTO {
+  @Post('resetPassword')
+  async resetPassword(
+    @Body() changePassword: ChangePasswordDTO,
+  ): Promise<ResponseDTO> {
+    const result = await this.authService.resetPassword(changePassword);
+    console.log(result, 'RESULT');
+    if (!result.status) {
+      return {
+        message: 'Error!',
+        data: result.data,
+      };
+    }
     return {
-      message: 'Successfull',
-      data: {},
+      message: 'Successful!',
+      data: result.data,
     };
   }
 }

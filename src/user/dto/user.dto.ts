@@ -27,15 +27,25 @@ export class RegisterDTO {
 }
 
 export class LoginDTO {
+  @ApiProperty()
   email: string;
+
+  @ApiProperty()
   password: string;
 }
 
 export class PasswordRecoveryRequestDTO {
+  @ApiProperty()
   email: string;
 }
 
 export class ChangePasswordDTO {
+  @ApiProperty()
+  email: string;
+
+  @ApiProperty()
   newPassword: string;
-  code: string;
+
+  @ApiProperty()
+  token: string;
 }

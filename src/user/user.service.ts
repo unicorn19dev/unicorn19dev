@@ -5,7 +5,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { RegisterDTO, LoginDTO } from './dto/user.dto';
 import * as bcrypt from 'bcrypt';
-import { JWTPayload } from './jwt';
+import { JWTPayload } from './interfaces/jwt';
+import { encrypt } from 'src/_helpers/utils';
 
 @Injectable()
 export class UserService {
@@ -20,8 +21,8 @@ export class UserService {
     if (userFound) {
       return 'Error! Email registrered already';
     }
-    const salt = bcrypt.genSaltSync(8);
-    user.password = bcrypt.hashSync(user.password, salt);
+
+    user.password = encrypt(user.password);
     const newUser = new this.userModel(user);
     newUser.save();
     return 'User created successfully';
@@ -45,7 +46,6 @@ export class UserService {
       credentials.password,
       user.password,
     );
-
     if (!valid) {
       throw new HttpException(
         {
