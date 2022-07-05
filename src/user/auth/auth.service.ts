@@ -17,15 +17,27 @@ export class AuthService {
   async forgotPassword(email: string): Promise<{ status: boolean; data: any }> {
     const user: User = await this.userModel.findOne({ email });
     if (user) {
-      const { token } = await this.userService.generateToken(
-        user.email,
-        '3600',
-      );
+      let searchCode = true;
+      let token = '';
+      do {
+        const tmpToken = await this.userService.generateToken(
+          user.email,
+          '3600',
+        );
+        token = tmpToken.token;
+        const record: ResetToken = await this.resetTokenModel.findOne({
+          token,
+        });
+        if (!record) {
+          searchCode = false;
+        }
+      } while (searchCode);
+
       const clientURL = process.env.URL;
-      const link = `${clientURL}/passwordReset?token=${token}&id=${user._id}`;
+      const link = `${clientURL}?token=${token}&email=${user.email}`;
       const existToken = await this.resetTokenModel.findOne({ email });
       if (existToken) {
-        const tokenUpdated = await this.resetTokenModel.findOneAndUpdate(
+        await this.resetTokenModel.findOneAndUpdate(
           { email },
           { token },
           { new: true },
@@ -34,12 +46,21 @@ export class AuthService {
         const newToken = new this.resetTokenModel({ token, email });
         newToken.save();
       }
-
+      const type = 'web'; // desde donde se hace la petición
+      let template = '';
+      let params = {};
+      if (type) {
+        template = 'views/templates/resetPassMobile.hbs';
+        params = { name: user.firstName + user.lastName, token };
+      } else {
+        template = 'views/templates/resetEmail.hbs';
+        params = { name: user.firstName + user.lastName, link };
+      }
       return await sendEmail(
         user.email,
         'Vetmergencia - Recuperación de contraseña',
-        { name: user.firstName + user.lastName, link },
-        'views/templates/resetEmail.hbs',
+        params,
+        template,
       );
     }
   }
@@ -48,21 +69,22 @@ export class AuthService {
     data: ChangePasswordDTO,
   ): Promise<{ status: boolean; data: any }> {
     try {
+      console.log(data, 'body');
       const tokenFound: ResetToken = await this.resetTokenModel.findOne({
-        email: data.email,
+        token: data.token,
       });
       if (!tokenFound || tokenFound.token !== data.token) {
         return {
           status: false,
-          data: 'Token incorrecto o vencido. Inicia el proceso nuevamente',
+          data: 'Token incorrecto o vencido. Solicite un nuevo código',
         };
       }
       const newPassword = encrypt(data.newPassword);
       await this.userModel.findOneAndUpdate(
-        { email: data.email },
+        { email: tokenFound.email },
         { password: newPassword },
       );
-      await this.resetTokenModel.deleteOne({ email: data.email });
+      await this.resetTokenModel.deleteOne({ email: tokenFound.email });
       return {
         status: true,
         data: 'Contraseña cambiada exitosamente',

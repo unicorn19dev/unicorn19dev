@@ -73,12 +73,19 @@ export class UserService {
   }
 
   /** UTILS **/
-  async generateToken(id: string, time?: string) {
+  async generateToken(id: string, time?: string, type = 'mobile') {
     const payload: JWTPayload = { userId: id };
+
     if (time) {
-      return {
-        token: this.jwtService.sign(payload, { expiresIn: time }),
-      };
+      if (type == 'web') {
+        return {
+          token: this.jwtService.sign(payload, { expiresIn: time }),
+        };
+      } else {
+        return {
+          token: Math.random().toString(36).substring(2, 6),
+        };
+      }
     }
     return {
       token: this.jwtService.sign(payload),

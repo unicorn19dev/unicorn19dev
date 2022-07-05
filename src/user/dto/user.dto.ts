@@ -41,9 +41,6 @@ export class PasswordRecoveryRequestDTO {
 
 export class ChangePasswordDTO {
   @ApiProperty()
-  email: string;
-
-  @ApiProperty()
   newPassword: string;
 
   @ApiProperty()

@@ -10,5 +10,5 @@ export interface User extends Document {
 
 export interface ResetToken extends Document {
   token: string;
-  user: any;
+  email: any;
 }
