@@ -5,45 +5,49 @@ import { join } from 'path';
 import * as bcrypt from 'bcrypt';
 
 export function sendEmail(
-  email: string,
-  subjectContent: string,
-  payload: any,
-  template: string,
+	email: string,
+	subjectContent: string,
+	payload: any,
+	template: string,
 ): { status: boolean; data: any } {
-  try {
-    const transporter = nodemailer.createTransport({
-      auth: {
-        pass: process.env.VETMERGENCIA_PASSWORD,
-        user: process.env.VETMERGENCIA_EMAIL,
-      },
-      port: 465,
-      service: process.env.EMAIL_SERVICE,
-    });
+	try {
+		const transporter = nodemailer.createTransport({
+			auth: {
+				pass: process.env.VETMERGENCIA_PASSWORD,
 
-    const source = fs.readFileSync(join(__dirname, '..', template), 'utf8');
-    const compiledTemplate = handlebars.compile(source);
-    const options = () => {
-      return {
-        from: process.env.VETMERGENCIA_EMAIL,
-        html: compiledTemplate(payload),
-        subject: subjectContent,
-        to: email,
-      };
-    };
-    // Send email
-    transporter.sendMail(options(), (error, info) => {
-      if (error) {
-        return { status: false, data: error };
-      } else {
-        return { status: true, data: {} };
-      }
-    });
-  } catch (error) {
-    return { status: false, data: error };
-  }
+				user: process.env.VETMERGENCIA_EMAIL,
+			},
+			port: 465,
+			service: process.env.EMAIL_SERVICE,
+		});
+
+		const source = fs.readFileSync(join(__dirname, '..', template), 'utf8');
+		const compiledTemplate = handlebars.compile(source);
+		const options = () => {
+			return {
+				from: process.env.VETMERGENCIA_EMAIL,
+				html: compiledTemplate(payload),
+				subject: subjectContent,
+				to: email,
+			};
+		};
+
+		// Send email
+
+		transporter.sendMail(options(), (error, info) => {
+			if (error) {
+				return { status: false, data: error };
+			} else {
+				return { status: true, data: {} };
+			}
+		});
+	} catch (error) {
+		return { status: false, data: error };
+	}
 }
 
 export function encrypt(info: string): string {
-  const salt = bcrypt.genSaltSync(8);
-  return bcrypt.hashSync(info, salt);
+	const salt = bcrypt.genSaltSync(8);
+
+	return bcrypt.hashSync(info, salt);
 }
