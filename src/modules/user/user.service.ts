@@ -5,8 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { RegisterDTO, LoginDTO } from './dto/user.dto';
 import * as bcrypt from 'bcrypt';
-import { encrypt, generateCode } from 'src/common/_helpers/utils';
-
+import { encrypt } from 'src/common/_helpers/utils';
 @Injectable()
 export class UserService {
 	constructor(
@@ -31,12 +30,11 @@ export class UserService {
 		const user: User = await this.userModel.findOne({
 			email: credentials.email,
 		});
-
+		console.log(credentials, 'credenciales');
 		if (!user) {
 			throw new HttpException(
 				{
 					status: HttpStatus.NOT_FOUND,
-
 					error: 'Unregistered user',
 				},
 
@@ -46,7 +44,6 @@ export class UserService {
 
 		const valid = await this.validatePassword(
 			credentials.password,
-
 			user.password,
 		);
 
@@ -54,17 +51,26 @@ export class UserService {
 			throw new HttpException(
 				{
 					status: HttpStatus.UNAUTHORIZED,
-
 					error: 'Incorrect password',
 				},
 
 				HttpStatus.UNAUTHORIZED,
 			);
 		}
-
-		const token = await generateCode();
-
-		return { user, token };
+		const token = this.generateToken(user.id);
+		const userSesion = await this.userModel.findOneAndUpdate(
+			{ email: user.email },
+			{ token: token.token },
+			{ new: true },
+		);
+		const sesion = {
+			email: userSesion.email,
+			firstName: userSesion.firstName,
+			lastName: userSesion.lastName,
+			role: userSesion.role,
+			token: userSesion.token,
+		};
+		return { user: sesion };
 	}
 
 	async getUsers(): Promise<User[]> {
@@ -81,6 +87,13 @@ export class UserService {
 	}
 
 	/** UTILS **/
+	generateToken(userId: any) {
+		const payload = { userId };
+		console.log(payload);
+		return {
+			token: this.jwtService.sign(payload),
+		};
+	}
 
 	async validatePassword(
 		password: string,

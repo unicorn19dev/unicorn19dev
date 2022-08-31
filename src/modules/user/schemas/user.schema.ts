@@ -13,4 +13,5 @@ export const UserSchema = new Schema({
 		phoneNumber: String,
 	},
 	medicalCode: String,
+	token: String,
 });
