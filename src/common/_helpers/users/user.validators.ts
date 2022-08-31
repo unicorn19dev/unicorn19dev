@@ -5,23 +5,23 @@ export const registerValidation = Joi.object({
 	lastName: Joi.string().required(),
 	email: Joi.string().email().trim().required(),
 	password: Joi.string().min(8).max(16).required(),
-	type: Joi.string().valid('admin', 'doctor', 'client'),
-	codeId: Joi.alternatives().conditional('type', {
+	role: Joi.string().valid('admin', 'doctor', 'insured'),
+	codeId: Joi.alternatives().conditional('role', {
 		is: 'doctor',
 		then: Joi.string().min(7).required(),
 	}),
 
-	city: Joi.alternatives().conditional('type', {
+	city: Joi.alternatives().conditional('role', {
 		is: 'doctor',
 		then: Joi.string().required(),
 	}),
 
-	address: Joi.alternatives().conditional('type', {
+	address: Joi.alternatives().conditional('role', {
 		is: 'doctor',
 		then: Joi.string().required(),
 	}),
 
-	phone: Joi.alternatives().conditional('type', {
+	phone: Joi.alternatives().conditional('role', {
 		is: 'doctor',
 		then: Joi.object({
 			code: Joi.string().required(),
@@ -29,7 +29,7 @@ export const registerValidation = Joi.object({
 		}).required(),
 	}),
 
-	medicalCode: Joi.alternatives().conditional('type', {
+	medicalCode: Joi.alternatives().conditional('role', {
 		is: 'doctor',
 		then: Joi.string().required(),
 	}),

@@ -5,6 +5,7 @@ import { UserService } from '../user.service';
 import { Injectable } from '@nestjs/common';
 import { sendEmail, encrypt } from 'src/common/_helpers/utils';
 import { Model } from 'mongoose';
+import { generateCode } from '../../../common/_helpers/utils';
 
 @Injectable()
 export class AuthService {
@@ -23,12 +24,9 @@ export class AuthService {
 			let searchCode = true;
 			let token = '';
 			do {
-				const tmpToken = await this.userService.generateToken(
-					user.email,
-					'3600',
-				);
+				const tmpToken = await generateCode();
 
-				token = tmpToken.token;
+				token = tmpToken;
 				const record: ResetToken = await this.resetTokenModel.findOne({
 					token,
 				});
@@ -39,7 +37,7 @@ export class AuthService {
 			} while (searchCode);
 
 			const clientURL = process.env.URL;
-			const link = `${clientURL}?token=${token}&email=${user.email}`;
+			const link = `${clientURL}resetPassword?email=${user.email}`;
 			const existToken = await this.resetTokenModel.findOne({ email });
 
 			if (existToken) {
@@ -53,16 +51,11 @@ export class AuthService {
 				newToken.save();
 			}
 
-			const type = 'web'; // desde donde se hace la petición
 			let template = '';
 			let params = {};
-			if (type) {
-				template = 'views/templates/resetPassMobile.hbs';
-				params = { name: user.firstName + user.lastName, token };
-			} else {
-				template = 'views/templates/resetEmail.hbs';
-				params = { name: user.firstName + user.lastName, link };
-			}
+
+			template = 'views/templates/resetEmail.hbs';
+			params = { name: user.firstName + user.lastName, token, link };
 
 			return await sendEmail(
 				user.email,

@@ -5,7 +5,7 @@ export const UserSchema = new Schema({
 	lastName: String,
 	email: { type: String },
 	password: String,
-	type: { type: String, enum: ['admin', 'doctor', 'client'] },
+	role: { type: String, enum: ['admin', 'doctor', 'insured'] },
 	city: String,
 	address: String,
 	phone: {

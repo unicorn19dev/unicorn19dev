@@ -21,7 +21,10 @@ export function sendEmail(
 			service: process.env.EMAIL_SERVICE,
 		});
 
-		const source = fs.readFileSync(join(__dirname, '..', template), 'utf8');
+		const source = fs.readFileSync(
+			join(__dirname, '../..', template),
+			'utf8',
+		);
 		const compiledTemplate = handlebars.compile(source);
 		const options = () => {
 			return {
@@ -50,4 +53,11 @@ export function encrypt(info: string): string {
 	const salt = bcrypt.genSaltSync(8);
 
 	return bcrypt.hashSync(info, salt);
+}
+
+export function generateCode(): string {
+	const newCode =
+		Math.random().toString(36).substring(2, 5) +
+		Math.random().toString(36).substring(2, 5);
+	return newCode;
 }

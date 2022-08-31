@@ -5,8 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { RegisterDTO, LoginDTO } from './dto/user.dto';
 import * as bcrypt from 'bcrypt';
-import { JWTPayload } from './interfaces/jwt';
-import { encrypt } from 'src/common/_helpers/utils';
+import { encrypt, generateCode } from 'src/common/_helpers/utils';
 
 @Injectable()
 export class UserService {
@@ -63,9 +62,9 @@ export class UserService {
 			);
 		}
 
-		const token = await this.generateToken(user.id);
+		const token = await generateCode();
 
-		return { user, ...token };
+		return { user, token };
 	}
 
 	async getUsers(): Promise<User[]> {
@@ -82,26 +81,6 @@ export class UserService {
 	}
 
 	/** UTILS **/
-
-	async generateToken(id: string, time?: string, type = 'mobile') {
-		const payload: JWTPayload = { userId: id };
-
-		if (time) {
-			if (type == 'web') {
-				return {
-					token: this.jwtService.sign(payload, { expiresIn: time }),
-				};
-			} else {
-				return {
-					token: Math.random().toString(36).substring(2, 6),
-				};
-			}
-		}
-
-		return {
-			token: this.jwtService.sign(payload),
-		};
-	}
 
 	async validatePassword(
 		password: string,

@@ -1,48 +1,53 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class RegisterDTO {
-  @ApiProperty()
-  firstName: string;
-  @ApiProperty()
-  lastName: string;
-  @ApiProperty()
-  email: string;
-  @ApiProperty()
-  password: string;
-  @ApiProperty()
-  type: string;
+	@ApiProperty()
+	firstName: string;
 
-  codeId?: string;
+	@ApiProperty()
+	lastName: string;
 
-  city?: string;
+	@ApiProperty()
+	email: string;
 
-  address?: string;
+	@ApiProperty()
+	password: string;
 
-  phone?: {
-    code: string;
-    phoneNumber: string;
-  };
+	@ApiProperty()
+	role: string;
 
-  medicalCode?: string;
+	codeId?: string;
+
+	city?: string;
+
+	address?: string;
+
+	phone?: {
+		code: string;
+
+		phoneNumber: string;
+	};
+
+	medicalCode?: string;
 }
 
 export class LoginDTO {
-  @ApiProperty()
-  email: string;
+	@ApiProperty()
+	email: string;
 
-  @ApiProperty()
-  password: string;
+	@ApiProperty()
+	password: string;
 }
 
 export class PasswordRecoveryRequestDTO {
-  @ApiProperty()
-  email: string;
+	@ApiProperty()
+	email: string;
 }
 
 export class ChangePasswordDTO {
-  @ApiProperty()
-  newPassword: string;
+	@ApiProperty()
+	newPassword: string;
 
-  @ApiProperty()
-  token: string;
+	@ApiProperty()
+	token: string;
 }
