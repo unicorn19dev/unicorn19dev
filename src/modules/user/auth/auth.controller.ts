@@ -2,11 +2,11 @@ import { AuthService } from './auth.service';
 import {
 	registerValidation,
 	loginValidation,
-} from './../../_helpers/users/user.validators';
-import { UserService } from './../user.service';
+} from '../../../common/_helpers/users/user.validators';
+import { UserService } from '../user.service';
 import { Body, Controller, Post } from '@nestjs/common';
-import { ResponseDTO } from 'src/_DTO/response.dto';
-import { JoiValidationPipe } from '../../_helpers/joi-validation-pipe';
+import { ResponseDTO } from 'src/common/_DTO/response.dto';
+import { JoiValidationPipe } from '../../../common/_helpers/joi-validation-pipe';
 import {
 	RegisterDTO,
 	LoginDTO,

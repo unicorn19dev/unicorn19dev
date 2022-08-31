@@ -1,9 +1,9 @@
-import { ChangePasswordDTO } from './../dto/user.dto';
-import { User, ResetToken } from './../interfaces/user';
+import { ChangePasswordDTO } from '../dto/user.dto';
+import { User, ResetToken } from '../interfaces/user';
 import { InjectModel } from '@nestjs/mongoose';
-import { UserService } from './../user.service';
+import { UserService } from '../user.service';
 import { Injectable } from '@nestjs/common';
-import { sendEmail, encrypt } from 'src/_helpers/utils';
+import { sendEmail, encrypt } from 'src/common/_helpers/utils';
 import { Model } from 'mongoose';
 
 @Injectable()

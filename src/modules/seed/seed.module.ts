@@ -1,12 +1,9 @@
+import { UserSchema } from './../user/schemas/user.schema';
+import { VersionDBSchema } from './schemas/versionDB.schema';
 import { Module } from '@nestjs/common';
-
 import { SeedService } from './seed.service';
-
 import { SeedController } from './seed.controller';
-
 import { UserModule } from '../user/user.module';
-import { VersionDBSchema } from 'src/seed/schemas/versionDB.schema';
-import { UserSchema } from 'src/user/schemas/user.schema';
 import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({

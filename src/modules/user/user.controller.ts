@@ -1,4 +1,4 @@
-import { ResponseDTO } from '../_DTO/response.dto';
+import { ResponseDTO } from '../../common/_DTO/response.dto';
 
 import { Body, Controller, Delete, Get, Param, Put } from '@nestjs/common';
 
@@ -46,4 +46,3 @@ export class UserController {
 		};
 	}
 }
-

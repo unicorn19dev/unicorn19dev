@@ -6,7 +6,7 @@ import { Model } from 'mongoose';
 import { RegisterDTO, LoginDTO } from './dto/user.dto';
 import * as bcrypt from 'bcrypt';
 import { JWTPayload } from './interfaces/jwt';
-import { encrypt } from 'src/_helpers/utils';
+import { encrypt } from 'src/common/_helpers/utils';
 
 @Injectable()
 export class UserService {

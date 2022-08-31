@@ -1,38 +1,30 @@
-import { ResetTokenSchema } from './user/schemas/resetToken.schema';
-
+import { ResetTokenSchema } from './modules/user/schemas/resetToken.schema';
 import { JwtModule } from '@nestjs/jwt';
-
 import { Module } from '@nestjs/common';
-
 import { AppController } from './app.controller';
-
 import { AppService } from './app.service';
-
-import { AuthController } from './user/auth/auth.controller';
-
-import { UserController } from './user/user.controller';
-
-import { AuthService } from './user/auth/auth.service';
-
-import { UserService } from './user/user.service';
-
-import { UserModule } from './user/user.module';
-
+import { UserController } from './modules/user/user.controller';
+import { AuthService } from './modules/user/auth/auth.service';
+import { UserService } from './modules/user/user.service';
+import { UserModule } from './modules/user/user.module';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ConfigModule } from '@nestjs/config';
-import { UserSchema } from './user/schemas/user.schema';
-import { SuscriptionsController } from './suscriptions/suscriptions.controller';
-import { MedicalHistoryController } from './medical-history/medical-history.controller';
-import { ServicesController } from './services/services.controller';
-import { SeedModule } from './seed/seed.module';
-import { VersionDBSchema } from './seed/schemas/versionDB.schema';
-import { SeedService } from './seed/seed.service';
-console.log('app module', process.env.SERVER_PORT);
+import { UserSchema } from './modules/user/schemas/user.schema';
+import { VersionDBSchema } from './modules/seed/schemas/versionDB.schema';
+import { SeedModule } from './modules/seed/seed.module';
+import { SuscriptionsController } from './modules/suscriptions/suscriptions.controller';
+import { MedicalHistoryController } from './modules/medical-history/medical-history.controller';
+import { ServicesController } from './modules/services/services.controller';
+import { SeedService } from './modules/seed/seed.service';
+import * as dotenv from 'dotenv';
+import { resolve } from 'path';
+dotenv.config({ path: resolve(__dirname, '../.env') });
+
 @Module({
 	imports: [
 		UserModule,
-		ConfigModule.forRoot(),
-		MongooseModule.forRoot(`mongodb://localhost:27017/vetmergencia`),
+		MongooseModule.forRoot(
+			`${process.env.DB_PLATFORM}://${process.env.DB_SERVER}:${process.env.DB_PORT}/${process.env.DB_DATABASE}`,
+		),
 		MongooseModule.forFeature([
 			{
 				name: 'Users',
