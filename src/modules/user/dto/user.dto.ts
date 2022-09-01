@@ -50,4 +50,7 @@ export class ChangePasswordDTO {
 
 	@ApiProperty()
 	token: string;
+
+	@ApiProperty()
+	email: string;
 }

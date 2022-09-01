@@ -72,8 +72,8 @@ export class AuthService {
 		try {
 			const tokenFound: ResetToken = await this.resetTokenModel.findOne({
 				token: data.token,
+				email: data.email,
 			});
-
 			if (!tokenFound || tokenFound.token !== data.token) {
 				return {
 					status: false,

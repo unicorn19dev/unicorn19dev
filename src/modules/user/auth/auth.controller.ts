@@ -54,7 +54,7 @@ export class AuthController {
 		}
 	}
 
-	@Post('passwordRecoveryRequest')
+	@Post('forgotPassword')
 	async passwordRecoveryRequest(
 		@Body() passwordRequest: PasswordRecoveryRequestDTO,
 	): Promise<ResponseDTO> {
