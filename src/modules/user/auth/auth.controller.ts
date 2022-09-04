@@ -39,16 +39,14 @@ export class AuthController {
 		@Body(new JoiValidationPipe(loginValidation)) credentials: LoginDTO,
 	): Promise<ResponseDTO> {
 		try {
-			const session = await this.userService.login(credentials);
-
+			const sesion = await this.userService.login(credentials);
 			return {
-				message: `Welcome ${session.user.firstName} ${session.user.lastName}`,
-				data: session,
+				message: `Welcome ${sesion.firstName} ${sesion.lastName}`,
+				data: sesion,
 			};
 		} catch (err) {
 			return {
-				message: `Error! ${err.response.error}`,
-
+				message: `Error! ${err}`,
 				data: err.response,
 			};
 		}

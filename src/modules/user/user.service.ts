@@ -30,7 +30,6 @@ export class UserService {
 		const user: User = await this.userModel.findOne({
 			email: credentials.email,
 		});
-		console.log(credentials, 'credenciales');
 		if (!user) {
 			throw new HttpException(
 				{
@@ -57,20 +56,15 @@ export class UserService {
 				HttpStatus.UNAUTHORIZED,
 			);
 		}
-		const token = this.generateToken(user.id);
-		const userSesion = await this.userModel.findOneAndUpdate(
-			{ email: user.email },
-			{ token: token.token },
-			{ new: true },
-		);
+		const { token } = this.generateToken(user.id);
 		const sesion = {
-			email: userSesion.email,
-			firstName: userSesion.firstName,
-			lastName: userSesion.lastName,
-			role: userSesion.role,
-			token: userSesion.token,
+			email: user.email,
+			firstName: user.firstName,
+			lastName: user.lastName,
+			role: user.role,
+			token,
 		};
-		return { user: sesion };
+		return { ...sesion };
 	}
 
 	async getUsers(): Promise<User[]> {
@@ -89,7 +83,6 @@ export class UserService {
 	/** UTILS **/
 	generateToken(userId: any) {
 		const payload = { userId };
-		console.log(payload);
 		return {
 			token: this.jwtService.sign(payload),
 		};

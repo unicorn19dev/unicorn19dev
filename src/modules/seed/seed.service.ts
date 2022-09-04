@@ -20,7 +20,7 @@ export class SeedService {
 			lastName: 'vetmergencia',
 			email: 'admin@vetmergencia.com',
 			password,
-			type: 'admin',
+			role: 'admin',
 		};
 		const versions = await this.versionDBModel.find();
 
