@@ -8,6 +8,14 @@ export class Phone {
 	@ApiProperty()
 	phoneNumber: string;
 }
+export class AdminUser {
+	public id: Types.ObjectId;
+	public firstName: string;
+	public lastName: string;
+	public email: string;
+	public password: string;
+	public role: string;
+}
 export class User {
 	public id: Types.ObjectId;
 	public firstName: string;

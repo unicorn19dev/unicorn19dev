@@ -2,7 +2,7 @@ import { JwtService } from '@nestjs/jwt';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { User, RegisterDTO, LoginDTO } from './dto/user.dto';
+import { User, RegisterDTO, LoginDTO, AdminUser } from './dto/user.dto';
 import * as bcrypt from 'bcrypt';
 import { encrypt } from 'src/common/_helpers/utils';
 
@@ -10,6 +10,7 @@ import { encrypt } from 'src/common/_helpers/utils';
 export class UserService {
 	constructor(
 		@InjectModel('Users') private userModel: Model<User>,
+		@InjectModel('AdminUsers') private adminUserModel: Model<AdminUser>,
 		private readonly jwtService: JwtService,
 	) {}
 
@@ -30,7 +31,10 @@ export class UserService {
 		const user: User = await this.userModel.findOne({
 			email: credentials.email,
 		});
-		if (!user) {
+		const adminUser: User = await this.adminUserModel.findOne({
+			email: credentials.email,
+		});
+		if (!user && !adminUser) {
 			throw new HttpException(
 				{
 					status: HttpStatus.NOT_FOUND,

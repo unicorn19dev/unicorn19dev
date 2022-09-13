@@ -1,16 +1,20 @@
-import { VersionDB } from './dto/version.dto';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { encrypt } from 'src/common/_helpers/utils';
-import { User } from '../users/dto/user.dto';
+import { encrypt } from '../../common/_helpers/utils';
+import { AdminUser } from '../../modules/users/dto/user.dto';
 
+interface VersionDBDto {
+	version: number;
+}
 @Injectable()
-export class SeedService {
+export class MigrationService {
 	constructor(
-		@InjectModel('Users') private userModel: Model<User>,
-		@InjectModel('VersionDB') private versionDBModel: Model<VersionDB>,
-	) {}
+		@InjectModel('AdminUsers') private userModel: Model<AdminUser>,
+		@InjectModel('VersionDB') private versionDBModel: Model<VersionDBDto>,
+	) {
+		this.loadInitialDBState();
+	}
 
 	async loadInitialDBState() {
 		const password = encrypt('12345678');
@@ -21,6 +25,7 @@ export class SeedService {
 			email: 'admin@vetmergencia.com',
 			password,
 			role: 'admin',
+			status: 'active',
 		};
 		const versions = await this.versionDBModel.find();
 
