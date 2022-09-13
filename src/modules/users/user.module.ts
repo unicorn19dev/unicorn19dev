@@ -1,34 +1,23 @@
 import { MongooseModule } from '@nestjs/mongoose';
-
 import { Module } from '@nestjs/common';
-
 import { JwtModule } from '@nestjs/jwt';
-
 import { AuthService } from './auth/auth.service';
-
 import { UserService } from './user.service';
-
 import { UserSchema } from './schemas/user.schema';
-
-import { ResetTokenSchema } from './schemas/resetToken.schema';
-
 import { UserController } from './user.controller';
-
 import { AuthController } from './auth/auth.controller';
+import { AdminUsersSchema } from './schemas/adminusers.schema';
 
 @Module({
 	imports: [
 		MongooseModule.forFeature([
 			{
 				name: 'Users',
-
 				schema: UserSchema,
 			},
-
 			{
-				name: 'ResetToken',
-
-				schema: ResetTokenSchema,
+				name: 'AdminUsers',
+				schema: AdminUsersSchema,
 			},
 		]),
 

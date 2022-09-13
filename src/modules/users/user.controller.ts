@@ -1,9 +1,9 @@
 import { ResponseDTO } from '../../common/_DTO/response.dto';
-
 import { Body, Controller, Delete, Get, Param, Put } from '@nestjs/common';
-
 import { UserService } from './user.service';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Users')
 @Controller('users')
 export class UserController {
 	constructor(private userService: UserService) {}

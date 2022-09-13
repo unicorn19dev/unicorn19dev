@@ -1,18 +1,25 @@
-import { ChangePasswordDTO } from '../dto/user.dto';
-import { User, ResetToken } from '../interfaces/user';
+import { messagges } from './../../../common/_helpers/messages';
+import { ChangePasswordDTO, User } from '../dto/user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { UserService } from '../user.service';
-import { Injectable } from '@nestjs/common';
+import {
+	CACHE_MANAGER,
+	HttpException,
+	Inject,
+	Injectable,
+	HttpStatus,
+} from '@nestjs/common';
 import { sendEmail, encrypt } from 'src/common/_helpers/utils';
 import { Model } from 'mongoose';
 import { generateCode } from '../../../common/_helpers/utils';
+import { Cache } from 'cache-manager';
 
 @Injectable()
 export class AuthService {
 	constructor(
 		@InjectModel('Users') private userModel: Model<User>,
-		@InjectModel('ResetToken') private resetTokenModel: Model<ResetToken>,
 		private readonly userService: UserService,
+		@Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
 	) {}
 
 	async forgotPassword(
@@ -21,35 +28,11 @@ export class AuthService {
 		const user: User = await this.userModel.findOne({ email });
 
 		if (user) {
-			let searchCode = true;
-			let token = '';
-			do {
-				const tmpToken = await generateCode();
-
-				token = tmpToken;
-				const record: ResetToken = await this.resetTokenModel.findOne({
-					token,
-				});
-
-				if (!record) {
-					searchCode = false;
-				}
-			} while (searchCode);
+			const token = await generateCode();
+			await this.cacheManager.set(email, token, { ttl: 300 });
 
 			const clientURL = process.env.URL;
 			const link = `${clientURL}resetPassword?email=${user.email}`;
-			const existToken = await this.resetTokenModel.findOne({ email });
-
-			if (existToken) {
-				await this.resetTokenModel.findOneAndUpdate(
-					{ email },
-					{ token },
-					{ new: true },
-				);
-			} else {
-				const newToken = new this.resetTokenModel({ token, email });
-				newToken.save();
-			}
 
 			let template = '';
 			let params = {};
@@ -70,25 +53,20 @@ export class AuthService {
 		data: ChangePasswordDTO,
 	): Promise<{ status: boolean; data: any }> {
 		try {
-			const tokenFound: ResetToken = await this.resetTokenModel.findOne({
-				token: data.token,
-				email: data.email,
-			});
-			if (!tokenFound || tokenFound.token !== data.token) {
-				return {
-					status: false,
-					data: 'Token incorrecto o vencido. Solicite un nuevo código',
-				};
+			const code = await this.cacheManager.get(data.email);
+			if (code !== data.token) {
+				throw new HttpException(
+					messagges.ERROR_RESTORE_CODE_NO_MATCH,
+					HttpStatus.BAD_REQUEST,
+				);
 			}
-
+			this.cacheManager.del(data.email);
 			const newPassword = encrypt(data.newPassword);
 
 			await this.userModel.findOneAndUpdate(
-				{ email: tokenFound.email },
+				{ email: data.email },
 				{ password: newPassword },
 			);
-
-			await this.resetTokenModel.deleteOne({ email: tokenFound.email });
 
 			return {
 				status: true,

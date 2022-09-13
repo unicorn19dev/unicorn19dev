@@ -5,12 +5,7 @@ export const registerValidation = Joi.object({
 	lastName: Joi.string().required(),
 	email: Joi.string().email().trim().required(),
 	password: Joi.string().min(8).max(16).required(),
-	role: Joi.string().valid('admin', 'doctor', 'insured'),
-	codeId: Joi.alternatives().conditional('role', {
-		is: 'doctor',
-		then: Joi.string().min(7).required(),
-	}),
-
+	role: Joi.string().valid('doctor', 'insured'),
 	city: Joi.alternatives().conditional('role', {
 		is: 'doctor',
 		then: Joi.string().required(),

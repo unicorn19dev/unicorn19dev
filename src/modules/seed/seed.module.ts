@@ -1,9 +1,9 @@
-import { UserSchema } from './../user/schemas/user.schema';
+import { UserSchema } from '../users/schemas/user.schema';
 import { VersionDBSchema } from './schemas/versionDB.schema';
 import { Module } from '@nestjs/common';
 import { SeedService } from './seed.service';
 import { SeedController } from './seed.controller';
-import { UserModule } from '../user/user.module';
+import { UserModule } from '../users/user.module';
 import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
@@ -11,7 +11,6 @@ import { MongooseModule } from '@nestjs/mongoose';
 		MongooseModule.forFeature([
 			{
 				name: 'Users',
-
 				schema: UserSchema,
 			},
 			{

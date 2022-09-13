@@ -7,13 +7,15 @@ import { UserService } from '../user.service';
 import { Body, Controller, Post } from '@nestjs/common';
 import { ResponseDTO } from 'src/common/_DTO/response.dto';
 import { JoiValidationPipe } from '../../../common/_helpers/joi-validation-pipe';
+import { RegisterDTO } from '../dto/user.dto';
 import {
-	RegisterDTO,
 	LoginDTO,
 	PasswordRecoveryRequestDTO,
 	ChangePasswordDTO,
 } from '../dto/user.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Authentication')
 @Controller()
 export class AuthController {
 	constructor(
@@ -29,7 +31,6 @@ export class AuthController {
 
 		return {
 			message: message,
-
 			data: {},
 		};
 	}
