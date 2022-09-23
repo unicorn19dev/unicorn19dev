@@ -6,6 +6,7 @@ async function bootstrap() {
 	const app = await NestFactory.create<NestExpressApplication>(
 		MigrationModule,
 	);
+	app.enableCors();
 }
 
 bootstrap();

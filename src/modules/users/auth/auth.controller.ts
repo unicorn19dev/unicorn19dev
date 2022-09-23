@@ -39,18 +39,12 @@ export class AuthController {
 	async login(
 		@Body(new JoiValidationPipe(loginValidation)) credentials: LoginDTO,
 	): Promise<ResponseDTO> {
-		try {
-			const sesion = await this.userService.login(credentials);
-			return {
-				message: `Welcome ${sesion.firstName} ${sesion.lastName}`,
-				data: sesion,
-			};
-		} catch (err) {
-			return {
-				message: `Error! ${err}`,
-				data: err.response,
-			};
-		}
+		console.log(credentials, 'credenciales');
+		const sesion = await this.userService.login(credentials);
+		return {
+			message: `Welcome ${sesion.firstName} ${sesion.lastName}`,
+			data: sesion,
+		};
 	}
 
 	@Post('forgotPassword')

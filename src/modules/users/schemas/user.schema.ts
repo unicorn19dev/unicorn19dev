@@ -39,13 +39,13 @@ export class User {
 	@Prop({ Enum: statusType, required: true })
 	status: statusType;
 
-	@Prop({ Type: String, required: true })
+	@Prop({ Type: String, required: false })
 	city: string;
 
-	@Prop({ Type: String, required: true })
+	@Prop({ Type: String, required: false })
 	address: string;
 
-	@Prop({ Type: Phone, required: true })
+	@Prop({ Type: Phone, required: false })
 	phone: Phone;
 
 	@Prop({ Type: String, required: false })

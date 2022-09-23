@@ -5,6 +5,7 @@ import { Model } from 'mongoose';
 import { User, RegisterDTO, LoginDTO, AdminUser } from './dto/user.dto';
 import * as bcrypt from 'bcrypt';
 import { encrypt } from 'src/common/_helpers/utils';
+import { statusType } from './schemas/user.schema';
 
 @Injectable()
 export class UserService {
@@ -21,20 +22,23 @@ export class UserService {
 		}
 
 		user.password = encrypt(user.password);
-		const newUser = new this.userModel(user);
+		const newUser = new this.userModel({
+			...user,
+			status: statusType.active,
+		});
 		newUser.save();
 
 		return 'User created successfully';
 	}
 
 	async login(credentials: LoginDTO): Promise<any> {
-		const user: User = await this.userModel.findOne({
+		const userCommon: User = await this.userModel.findOne({
 			email: credentials.email,
 		});
 		const adminUser: User = await this.adminUserModel.findOne({
 			email: credentials.email,
 		});
-		if (!user && !adminUser) {
+		if (!userCommon && !adminUser) {
 			throw new HttpException(
 				{
 					status: HttpStatus.NOT_FOUND,
@@ -44,12 +48,12 @@ export class UserService {
 				HttpStatus.NOT_FOUND,
 			);
 		}
-
+		let user = null;
+		user = userCommon ? userCommon : adminUser;
 		const valid = await this.validatePassword(
 			credentials.password,
 			user.password,
 		);
-
 		if (!valid) {
 			throw new HttpException(
 				{

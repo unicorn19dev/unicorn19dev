@@ -11,4 +11,5 @@ export const messagges = {
 		'No existe un codigo de recuperacion para ese Email',
 	ERROR_RESTORE_CODE_NO_MATCH: 'El codigo de recuperacion no coincide',
 	RESEND_NEW_RESTORE_CODE: 'Hemos enviado nuevamente el código de validación',
+	CREATE_SERVICE: 'Servicio creado',
 };

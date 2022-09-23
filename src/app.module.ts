@@ -6,11 +6,14 @@ import { UserController } from './modules/users/user.controller';
 import { UserModule } from './modules/users/user.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { SuscriptionsController } from './modules/suscriptions/suscriptions.controller';
-import { MedicalHistoryController } from './modules/medical-history/medical-history.controller';
+import { MedicalStoriesController } from './modules/medical-stories/medical-stories.controller';
 import { ServicesController } from './modules/services/services.controller';
 
 import * as dotenv from 'dotenv';
 import { resolve } from 'path';
+import { ServiceModule } from './modules/services/services.module';
+import { SuscriptionsModule } from './modules/suscriptions/suscriptions.module';
+import { MedicalStoriesModule } from './modules/medical-stories/medical-stories.module';
 dotenv.config({ path: resolve(__dirname, '../.env') });
 
 @Module({
@@ -24,13 +27,16 @@ dotenv.config({ path: resolve(__dirname, '../.env') });
 			`${process.env.DB_PLATFORM}://${process.env.DB_SERVER}:${process.env.DB_PORT}/${process.env.DB_DATABASE}`,
 		),
 		JwtModule.register({ secret: 'hard!to-guess_secret' }),
+		ServiceModule,
+		SuscriptionsModule,
+		MedicalStoriesModule,
 	],
 
 	controllers: [
 		AppController,
 		UserController,
 		SuscriptionsController,
-		MedicalHistoryController,
+		MedicalStoriesController,
 		ServicesController,
 	],
 
