@@ -41,6 +41,7 @@ export class AuthController {
 	): Promise<ResponseDTO> {
 		console.log(credentials, 'credenciales');
 		const sesion = await this.userService.login(credentials);
+		console.log(sesion);
 		return {
 			message: `Welcome ${sesion.firstName} ${sesion.lastName}`,
 			data: sesion,

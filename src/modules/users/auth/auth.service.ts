@@ -1,4 +1,4 @@
-import { messagges } from './../../../common/_helpers/messages';
+import { messages } from './../../../common/_helpers/messages';
 import { ChangePasswordDTO, User } from '../dto/user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { UserService } from '../user.service';
@@ -56,7 +56,7 @@ export class AuthService {
 			const code = await this.cacheManager.get(data.email);
 			if (code !== data.token) {
 				throw new HttpException(
-					messagges.ERROR_RESTORE_CODE_NO_MATCH,
+					messages.ERROR_RESTORE_CODE_NO_MATCH,
 					HttpStatus.BAD_REQUEST,
 				);
 			}

@@ -39,6 +39,7 @@ export class UserService {
 			email: credentials.email,
 		});
 		if (!userCommon && !adminUser) {
+			console.log('usuario no registrado');
 			throw new HttpException(
 				{
 					status: HttpStatus.NOT_FOUND,
@@ -55,6 +56,7 @@ export class UserService {
 			user.password,
 		);
 		if (!valid) {
+			console.log('contraseña incorrecta');
 			throw new HttpException(
 				{
 					status: HttpStatus.UNAUTHORIZED,

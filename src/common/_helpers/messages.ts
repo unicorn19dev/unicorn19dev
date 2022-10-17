@@ -1,4 +1,4 @@
-export const messagges = {
+export const messages = {
 	ERROR_DUPLICATE_EMAIL_USER: 'Este email ya fue registrado',
 	ERROR_NO_EMAIL_REGISTRATE: 'Correo no registrado',
 	ERROR_PASSWORD_NO_MATCH: 'Contraseña inválida',
