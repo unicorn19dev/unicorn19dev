@@ -74,6 +74,7 @@ export class UserService {
 			role: user.role,
 			token,
 		};
+		console.log(sesion);
 		return { ...sesion };
 	}
 
