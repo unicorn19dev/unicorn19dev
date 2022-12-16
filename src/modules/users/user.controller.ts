@@ -29,12 +29,21 @@ export class UserController {
 	}
 
 	@Put(':id')
-	updateUser(@Body() user, @Param() id): ResponseDTO {
-		return {
-			message: 'User edited',
+	async updateUser(@Body() user, @Param() id): Promise<ResponseDTO> {
+		try {
+			const newUser = await this.userService.updateUser(id.id, user);
+			return {
+				message: 'User edited',
 
-			data: {},
-		};
+				data: newUser,
+			};
+		} catch (err) {
+			return {
+				message: 'Error',
+
+				data: err,
+			};
+		}
 	}
 
 	@Delete(':id')

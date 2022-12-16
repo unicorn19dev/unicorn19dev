@@ -73,6 +73,7 @@ export class UserService {
 			lastName: user.lastName,
 			role: user.role,
 			token,
+			id: user._id,
 		};
 		console.log(sesion);
 		return { ...sesion };
@@ -89,6 +90,30 @@ export class UserService {
 
 	getUserById(id: string) {
 		return this.userModel.findOne({ _id: id });
+	}
+
+	async updateUser(id: string, body: any) {
+		const user = await this.userModel.findOne({ _id: id });
+		if (user.email !== body.email) {
+			const user = await this.userModel.find({ email: body.email });
+			if (user.length > 0) {
+				throw new HttpException(
+					{
+						status: HttpStatus.NOT_FOUND,
+						error: 'Este correo ya está registrado.',
+					},
+
+					HttpStatus.NOT_FOUND,
+				);
+			}
+		}
+		const updatedUser = await this.userModel.findOneAndUpdate(
+			{ _id: id },
+			body,
+			{ new: true },
+		);
+		console.log('updated', updatedUser);
+		return updatedUser;
 	}
 
 	/** UTILS **/
