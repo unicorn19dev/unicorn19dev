@@ -39,11 +39,10 @@ export class UserService {
 			email: credentials.email,
 		});
 		if (!userCommon && !adminUser) {
-			console.log('usuario no registrado');
 			throw new HttpException(
 				{
 					status: HttpStatus.NOT_FOUND,
-					error: 'Unregistered user',
+					error: 'Usuario no registrado',
 				},
 
 				HttpStatus.NOT_FOUND,
@@ -56,17 +55,21 @@ export class UserService {
 			user.password,
 		);
 		if (!valid) {
-			console.log('contraseña incorrecta');
 			throw new HttpException(
 				{
 					status: HttpStatus.UNAUTHORIZED,
-					error: 'Incorrect password',
+					error: 'Contraseña incorrecta',
 				},
 
 				HttpStatus.UNAUTHORIZED,
 			);
 		}
-		const { token } = this.generateToken(user.id);
+		const payload = {
+			id: user.id,
+			email: user.email,
+			role: user.role,
+		};
+		const { token } = this.generateToken(payload);
 		const sesion = {
 			email: user.email,
 			firstName: user.firstName,
@@ -117,8 +120,7 @@ export class UserService {
 	}
 
 	/** UTILS **/
-	generateToken(userId: any) {
-		const payload = { userId };
+	generateToken(payload: any) {
 		return {
 			token: this.jwtService.sign(payload),
 		};

@@ -4,7 +4,7 @@ import { Document } from 'mongoose';
 
 export type AdminUsersDocument = AdminUsers & Document;
 
-enum roleType {
+export enum adminRoleType {
 	admin = 'admin',
 }
 
@@ -27,8 +27,8 @@ export class AdminUsers {
 	@Prop({ Type: String, required: true })
 	lastName: string;
 
-	@Prop({ Enum: roleType, required: true })
-	role: roleType;
+	@Prop({ Enum: adminRoleType, required: true })
+	role: adminRoleType;
 
 	@Prop({ Enum: statusType, required: true })
 	status: statusType;

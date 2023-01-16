@@ -12,4 +12,5 @@ export const messages = {
 	ERROR_RESTORE_CODE_NO_MATCH: 'El codigo de recuperacion no coincide',
 	RESEND_NEW_RESTORE_CODE: 'Hemos enviado nuevamente el código de validación',
 	CREATE_SERVICE: 'Servicio creado',
+	APPOINTMENT_LIST: 'Listado de citas',
 };
